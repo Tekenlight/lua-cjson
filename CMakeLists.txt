@@ -6,6 +6,8 @@
 project(lua-cjson C)
 cmake_minimum_required(VERSION 2.6)
 
+set(MACOSX_RPATH on)
+
 option(USE_INTERNAL_FPCONV "Use internal strtod() / g_fmt() code for performance")
 option(MULTIPLE_THREADS "Support multi-threaded apps with internal fpconv - recommended" ON)
 
@@ -76,8 +78,10 @@ if(MSVC)
 endif()
 
 add_library(cjson MODULE lua_cjson.c strbuf.c ${FPCONV_SOURCES})
-set_target_properties(cjson PROPERTIES PREFIX "")
-target_link_libraries(cjson ${_MODULE_LINK})
-install(TARGETS cjson DESTINATION "${_lua_module_dir}")
+#add_library(cjson SHARED lua_cjson.c strbuf.c ${FPCONV_SOURCES})
+set_target_properties(cjson PROPERTIES PREFIX "" MACOSX_RPATH ON)
+target_link_libraries(cjson ${_MODULE_LINK} )
+#install(TARGETS cjson DESTINATION "${_lua_module_dir}")
+install(TARGETS cjson DESTINATION "/usr/local/lib")
 
 # vi:ai et sw=4 ts=4:
