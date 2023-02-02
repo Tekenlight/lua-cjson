@@ -12,6 +12,7 @@
 
 ##### Build defaults #####
 LUA_VERSION =       5.3
+#LUA_VERSION =       5.4
 TARGET =            cjson.so
 PREFIX =            /usr/local
 #CFLAGS =            -g -Wall -pedantic -fno-inline
