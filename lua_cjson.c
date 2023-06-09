@@ -503,6 +503,20 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
     max = 0;
     items = 0;
 
+	/* Check if the passed table is an empty array */
+	lua_pushinteger(l, -1);
+	lua_rawget(l, -2);
+	if (lua_isstring(l, -1)) {
+		const char * str = lua_tostring(l, -1);
+		if (str && !strcmp(str, "EMPTY_ARRAY")) {
+			lua_pop(l, 1);
+			lua_pushnil(l);
+			lua_rawseti(l, -2, -1);
+			return 0;
+		}
+	}
+	lua_pop(l, 1);
+
     lua_pushnil(l);
     /* table, startkey */
     while (lua_next(l, -2) != 0) {
@@ -691,9 +705,11 @@ static void json_append_data(lua_State *l, json_config_t *cfg,
         current_depth++;
         json_check_encode_depth(l, cfg, current_depth, json);
         len = lua_array_length(l, cfg, json);
-        if (len > 0)
+        if (len > 0) // Array with data
             json_append_array(l, cfg, current_depth, json, len);
-        else
+		else if (len == 0) // Empty array
+            json_append_array(l, cfg, current_depth, json, 0);
+        else // Object
             json_append_object(l, cfg, current_depth, json);
         break;
     case LUA_TNIL:
