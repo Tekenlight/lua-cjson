@@ -499,6 +499,7 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
     double k;
     int max;
     int items;
+	int potential_empty_array = 0;
 
     max = 0;
     items = 0;
@@ -512,10 +513,15 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
 			lua_pop(l, 1);
 			lua_pushnil(l);
 			lua_rawseti(l, -2, -1);
-			return 0;
+			potential_empty_array = 1;
+		}
+		else {
+			lua_pop(l, 1);
 		}
 	}
-	lua_pop(l, 1);
+	else  {
+		lua_pop(l, 1);
+	}
 
     lua_pushnil(l);
     /* table, startkey */
@@ -547,6 +553,8 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
 
         return -1;
     }
+
+	if (potential_empty_array && !max) return 0;
 
     return max;
 }
