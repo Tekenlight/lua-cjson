@@ -510,18 +510,12 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
 	if (lua_isstring(l, -1)) {
 		const char * str = lua_tostring(l, -1);
 		if (str && !strcmp(str, "EMPTY_ARRAY")) {
-			lua_pop(l, 1);
 			lua_pushnil(l);
-			lua_rawseti(l, -2, -1);
+			lua_rawseti(l, -3, -1);
 			potential_empty_array = 1;
 		}
-		else {
-			lua_pop(l, 1);
-		}
 	}
-	else  {
-		lua_pop(l, 1);
-	}
+	lua_pop(l, 1);
 
     lua_pushnil(l);
     /* table, startkey */
