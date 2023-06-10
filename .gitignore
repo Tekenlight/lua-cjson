@@ -5,4 +5,5 @@ notes
 packages
 tags
 tests/utf8.dat
+tests/c.c
 cmake-build

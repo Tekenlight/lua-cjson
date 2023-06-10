@@ -166,6 +166,9 @@ local function compare_values(val1, val2)
         end
 
         if not compare_values(val1[k], val2[k]) then
+			print(debug.getinfo(1).source, debug.getinfo(1).currentline, val1[k]);
+			print(debug.getinfo(1).source, debug.getinfo(1).currentline, val2[k]);
+			print(debug.getinfo(1).source, debug.getinfo(1).currentline);
             return false
         end
 
@@ -173,6 +176,7 @@ local function compare_values(val1, val2)
     end
     for k, _ in pairs(check_keys) do
         -- Not the same if any keys from val1 were not found in val2
+		 print(debug.getinfo(1).source, debug.getinfo(1).currentline);
         return false
     end
     return true
@@ -196,6 +200,7 @@ local function run_test(testname, func, input, should_work, output)
 
     local result = { pcall(func, unpack(input)) }
     local success = table.remove(result, 1)
+	print(debug.getinfo(1).source, debug.getinfo(1).currentline, success);
 
     local correct = false
     if success == should_work and compare_values(result, output) then
