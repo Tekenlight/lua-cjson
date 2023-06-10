@@ -548,9 +548,7 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
         return -1;
     }
 
-	if (potential_empty_array && !max) return 0;
-
-    return max;
+    return (max) ? max : ((potential_empty_array) ? 0 : -1);
 }
 
 static void json_check_encode_depth(lua_State *l, json_config_t *cfg,
