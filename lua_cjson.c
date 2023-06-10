@@ -164,7 +164,8 @@ static const char *char2escape[256] = {
     "\\u0018", "\\u0019", "\\u001a", "\\u001b",
     "\\u001c", "\\u001d", "\\u001e", "\\u001f",
     NULL, NULL, "\\\"", NULL, NULL, NULL, NULL, NULL,
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, "\\/",
+    //NULL, NULL, NULL, NULL, NULL, NULL, NULL, "\\/",
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
@@ -438,7 +439,7 @@ static void json_create_config(lua_State *l)
         cfg->escape2char[i] = 0;          /* String error */
     cfg->escape2char['"'] = '"';
     cfg->escape2char['\\'] = '\\';
-    cfg->escape2char['/'] = '/';
+    //cfg->escape2char['/'] = '/';
     cfg->escape2char['b'] = '\b';
     cfg->escape2char['t'] = '\t';
     cfg->escape2char['n'] = '\n';
