@@ -439,7 +439,7 @@ static void json_create_config(lua_State *l)
         cfg->escape2char[i] = 0;          /* String error */
     cfg->escape2char['"'] = '"';
     cfg->escape2char['\\'] = '\\';
-    //cfg->escape2char['/'] = '/';
+    cfg->escape2char['/'] = '/';
     cfg->escape2char['b'] = '\b';
     cfg->escape2char['t'] = '\t';
     cfg->escape2char['n'] = '\n';
@@ -722,9 +722,23 @@ static void json_append_data(lua_State *l, json_config_t *cfg,
             break;
         }
     default:
+        int ret = luaL_callmeta(l, -1, "__tostring");
         /* Remaining types (LUA_TFUNCTION, LUA_TUSERDATA, LUA_TTHREAD,
          * and LUA_TLIGHTUSERDATA) cannot be serialised */
-        json_encode_exception(l, cfg, json, -1, "type not supported");
+        if (ret == 0) {
+            json_encode_exception(l, cfg, json, -1, "type not supported");
+        }
+        else {
+            const char * str = lua_tostring(l, -1);
+            if (str != NULL && strcmp(str, "")) {
+                json_append_string(l, json, -1);
+                lua_pop(l, 1);
+            }
+            else {
+                lua_pop(l, 1);
+                json_encode_exception(l, cfg, json, -1, "type not supported");
+            }
+        }
         /* never returns */
     }
 }
