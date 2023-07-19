@@ -730,9 +730,15 @@ static void json_append_data(lua_State *l, json_config_t *cfg,
         }
         else {
             const char * str = lua_tostring(l, -1);
-            if (str != NULL && strcmp(str, "")) {
-                json_append_string(l, json, -1);
-                lua_pop(l, 1);
+            if (str != NULL) {
+                if (strcmp(str, "") && lua_stringtonumber(l, str)) {
+                    json_append_number(l, cfg, json, -1);
+                    lua_pop(l, 2);
+                }
+                else {
+                    json_append_string(l, json, -1);
+                    lua_pop(l, 1);
+                }
             }
             else {
                 lua_pop(l, 1);
