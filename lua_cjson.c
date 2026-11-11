@@ -522,8 +522,8 @@ static int lua_array_length(lua_State *l, json_config_t *cfg, strbuf_t *json)
             const char * str = lua_tostring(l, -1);
             if (str && !strcmp(str, "array")) {
                 potential_empty_array = 1;
-                lua_pop(l, 1);
             }
+            lua_pop(l, 1);
         }
     }
 
@@ -1247,9 +1247,19 @@ static void json_parse_array_context(lua_State *l, json_parse_t *json)
     json_token_t token;
     int i;
 
-    /* 2 slots required:
-     * .., table, value */
-    json_decode_descend(l, json, 2);
+    /*
+     * Reserve 4 stack slots:
+     *
+     * 1 - Array table
+     * 2 - Metatable
+     * 3 - "__jsontype" value
+     * 4 - Temporary key used by lua_setfield()
+     *
+     * Array elements are processed individually and consumed
+     * by lua_rawseti(). Nested structures reserve their own
+     * stack capacity.
+     */
+    json_decode_descend(l, json, 4);
 
     lua_newtable(l);
 
